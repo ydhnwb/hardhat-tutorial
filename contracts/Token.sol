@@ -1,5 +1,7 @@
 pragma solidity ^0.8.9;
 
+import "hardhat/console.sol";
+
 //This is the main building lock for smart contract
 contract Token {
     //some string type variables to identify the token
@@ -19,24 +21,22 @@ contract Token {
     // what happens within your contract
     event Transfer(address indexed _from, address indexed _to, uint256 _value);
 
-
     /**
      *  Contract initizialization
      */
 
-    constructor(){
+    constructor() {
         // The totalSupply is assigned to the transaction sender, which is the
         // accoount that is deploying the contract
         balances[msg.sender] = totalSupply;
         owner = msg.sender;
     }
 
-
-    /** 
-    * A function to transfer to token.
-    *
-    * The `external` modifier makes a function *only* callable from *outside*
-    * the contract    
+    /**
+     * A function to transfer to token.
+     *
+     * The `external` modifier makes a function *only* callable from *outside*
+     * the contract
      */
 
     function transfer(address to, uint256 amount) external {
@@ -44,6 +44,7 @@ contract Token {
         // If `require`'s first argument evaluates to `false` then the
         // transaction will be reverted
         require(balances[msg.sender] >= amount, "Not enough tokens");
+        console.log("Transferring %s from %s to %s", amount, msg.sender, to);
 
         //Transfer the amount
         balances[msg.sender] -= amount;
@@ -51,18 +52,17 @@ contract Token {
 
         //Notify off-chain applications of the transfer.abi
         emit Transfer(msg.sender, to, amount);
-
     }
 
     /**
      * Read only fuction to retrieve the token balance of a given account
      * The `view` modifier indicates that it doesnt modify the contract (view-only)
      * state, which allows us to call it without executing a transaction
-     * 
+     *
      * @param account is address what we gonna see the balance
-     * 
+     *
      */
-    function balanceOf(address account) external view returns (uint256){
+    function balanceOf(address account) external view returns (uint256) {
         return balances[account];
     }
 }
